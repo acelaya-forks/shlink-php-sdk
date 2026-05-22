@@ -31,15 +31,27 @@ class TagConflictExceptionTest extends TestCase
     public static function provideExceptions(): iterable
     {
         yield [HttpException::fromPayload([]), '', '', '', -1];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 404,
-        ]), '', '', $message, $code];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 409,
-            'oldName' => $oldName = 'old',
-            'newName' => $newName = 'new',
-        ]), $oldName, $newName, $message, $code];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 404,
+            ]),
+            '',
+            '',
+            $message,
+            $code,
+        ];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 409,
+                'oldName' => $oldName = 'old',
+                'newName' => $newName = 'new',
+            ]),
+            $oldName,
+            $newName,
+            $message,
+            $code,
+        ];
     }
 }

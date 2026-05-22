@@ -22,9 +22,7 @@ use function sprintf;
 
 readonly class ShortUrlsClient implements ShortUrlsClientInterface
 {
-    public function __construct(private HttpClientInterface $httpClient)
-    {
-    }
+    public function __construct(private HttpClientInterface $httpClient) {}
 
     public function listShortUrls(): ShortUrlsList
     {

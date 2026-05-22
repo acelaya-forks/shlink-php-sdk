@@ -33,10 +33,15 @@ class ShortUrlMetaTest extends TestCase
         $formattedDate = $now->format(DateTimeInterface::ATOM); // @phpstan-ignore-line
 
         yield 'defaults' => [[], null, null, null];
-        yield 'all data' => [[
-            'validSince' => $formattedDate,
-            'validUntil' => $formattedDate,
-            'maxVisits' => 35,
-        ], $now, $now, 35];
+        yield 'all data' => [
+            [
+                'validSince' => $formattedDate,
+                'validUntil' => $formattedDate,
+                'maxVisits' => 35,
+            ],
+            $now,
+            $now,
+            35,
+        ];
     }
 }

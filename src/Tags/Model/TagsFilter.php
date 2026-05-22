@@ -12,9 +12,7 @@ use function sprintf;
 
 final class TagsFilter implements ArraySerializable
 {
-    private function __construct(private array $query = [])
-    {
-    }
+    private function __construct(private array $query = []) {}
 
     public static function create(): self
     {
@@ -55,7 +53,7 @@ final class TagsFilter implements ArraySerializable
         // no matter the size of the page. Because of that, when ordering by those fields, it's better to load the
         // whole dataset at once, until that issue is fixed.
 
-        if (! isset($this->query['orderBy'])) {
+        if (!isset($this->query['orderBy'])) {
             return true;
         }
 
@@ -65,6 +63,6 @@ final class TagsFilter implements ArraySerializable
             TagsListOrderField::VISITS_COUNT->value,
         ];
 
-        return ! in_array($field, $orderFieldsThatShouldNotPaginate, true);
+        return !in_array($field, $orderFieldsThatShouldNotPaginate, true);
     }
 }

@@ -8,9 +8,7 @@ use JsonSerializable;
 
 final readonly class TagRenaming implements JsonSerializable
 {
-    private function __construct(private array $payload)
-    {
-    }
+    private function __construct(private array $payload) {}
 
     public static function fromOldNameAndNewName(string $oldName, string $newName): self
     {

@@ -28,7 +28,7 @@ use function array_map;
 class TagsClientTest extends TestCase
 {
     private TagsClient $tagsClient;
-    private MockObject & HttpClientInterface $httpClient;
+    private MockObject&HttpClientInterface $httpClient;
 
     public function setUp(): void
     {
@@ -63,26 +63,29 @@ class TagsClientTest extends TestCase
         $this->assertListTags(
             ['/tags/stats', $this->isArray()],
             [[], [], [], [], []],
-            fn (): array => array_map(fn () => [], [...$this->tagsClient->listTagsWithStats()]),
+            fn (): array => array_map(static fn () => [], [...$this->tagsClient->listTagsWithStats()]),
         );
     }
 
     #[Test]
     public function listTagsWithStatsReturnsExpectedVisitsCount(): void
     {
-        $this->httpClient->expects($this->once())->method('getFromShlink')->willReturn([
-            'tags' => [
-                'data' => [[
-                    'tag' => 'foo',
-                    'shortUrlsCount' => 1,
-                    'visitsSummary' => [
-                        'total' => 3,
-                        'nonBots' => 2,
-                        'bots' => 1,
-                    ],
-                ]],
-            ],
-        ]);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('getFromShlink')
+            ->willReturn([
+                'tags' => [
+                    'data' => [[
+                        'tag' => 'foo',
+                        'shortUrlsCount' => 1,
+                        'visitsSummary' => [
+                            'total' => 3,
+                            'nonBots' => 2,
+                            'bots' => 1,
+                        ],
+                    ]],
+                ],
+            ]);
 
         $list = $this->tagsClient->listTagsWithStats();
 
@@ -100,26 +103,33 @@ class TagsClientTest extends TestCase
     {
         $filter = TagsFilter::create()->searchingBy('foo')->orderingAscBy(TagsListOrderField::TAG);
         $this->assertListTags(
-            ['/tags/stats', $this->callback(function (array $arg) use ($filter) {
-                $filterArray = $filter->toArray();
-                foreach ($filterArray as $key => $expectedValue) {
-                    Assert::assertEquals($expectedValue, $arg[$key]);
-                }
+            [
+                '/tags/stats',
+                $this->callback(static function (array $arg) use ($filter) {
+                    $filterArray = $filter->toArray();
+                    foreach ($filterArray as $key => $expectedValue) {
+                        Assert::assertEquals($expectedValue, $arg[$key]);
+                    }
 
-                return true;
-            })],
+                    return true;
+                }),
+            ],
             [[], [], [], [], []],
-            fn (): array => array_map(fn () => [], [...$this->tagsClient->listTagsWithStatsWithFilter($filter)]),
+            fn (): array => array_map(static fn () => [], [...$this->tagsClient->listTagsWithStatsWithFilter($filter)]),
         );
     }
 
     private function assertListTags(array $expectedArgs, array $expectedData, callable $listTags): void
     {
-        $this->httpClient->expects($this->once())->method('getFromShlink')->with(...$expectedArgs)->willReturn([
-            'tags' => [
-                'data' => $expectedData,
-            ],
-        ]);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('getFromShlink')
+            ->with(...$expectedArgs)
+            ->willReturn([
+                'tags' => [
+                    'data' => $expectedData,
+                ],
+            ]);
 
         $result = $listTags();
 
@@ -150,20 +160,20 @@ class TagsClientTest extends TestCase
     public static function provideRenameExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'INVALID_ARGUMENT' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'INVALID_ARGUMENT' => [
             HttpException::fromPayload(['type' => ErrorType::INVALID_DATA->value]),
             InvalidDataException::class,
         ];
-        yield 'FORBIDDEN_OPERATION' =>  [
+        yield 'FORBIDDEN_OPERATION' => [
             HttpException::fromPayload(['type' => ErrorType::FORBIDDEN_TAG_OPERATION->value]),
             ForbiddenTagOperationException::class,
         ];
-        yield 'TAG_NOT_FOUND' =>  [
+        yield 'TAG_NOT_FOUND' => [
             HttpException::fromPayload(['type' => ErrorType::TAG_NOT_FOUND->value]),
             TagNotFoundException::class,
         ];
-        yield 'TAG_CONFLICT' =>  [
+        yield 'TAG_CONFLICT' => [
             HttpException::fromPayload(['type' => ErrorType::TAG_CONFLICT->value]),
             TagConflictException::class,
         ];
@@ -173,12 +183,15 @@ class TagsClientTest extends TestCase
     public function deleteTagsCallsApi(): void
     {
         $tags = ['foo', 'bar', 'baz'];
-        $this->httpClient->expects($this->once())->method('callShlinkWithBody')->with(
-            '/tags',
-            'DELETE',
-            [],
-            ['tags' => $tags],
-        );
+        $this->httpClient
+            ->expects($this->once())
+            ->method('callShlinkWithBody')
+            ->with(
+                '/tags',
+                'DELETE',
+                [],
+                ['tags' => $tags],
+            );
 
         $this->tagsClient->deleteTags(...$tags);
     }
@@ -198,8 +211,8 @@ class TagsClientTest extends TestCase
     public static function provideDeleteExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'FORBIDDEN_OPERATION' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'FORBIDDEN_OPERATION' => [
             HttpException::fromPayload(['type' => ErrorType::FORBIDDEN_TAG_OPERATION->value]),
             ForbiddenTagOperationException::class,
         ];

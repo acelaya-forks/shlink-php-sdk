@@ -15,8 +15,7 @@ final readonly class RedirectCondition implements JsonSerializable
         public string|null $matchValue = null,
         public string|null $matchKey = null,
         private string|null $originalType = null,
-    ) {
-    }
+    ) {}
 
     public static function forQueryParam(string $param, string $value): self
     {
@@ -77,7 +76,7 @@ final readonly class RedirectCondition implements JsonSerializable
         $originalType = $payload['type'] ?? '';
         return new self(
             type: RedirectConditionType::tryFrom($originalType) ?? RedirectConditionType::UNKNOWN,
-            matchValue:  $payload['matchValue'] ?? null,
+            matchValue: $payload['matchValue'] ?? null,
             matchKey: $payload['matchKey'] ?? null,
             originalType: $originalType,
         );

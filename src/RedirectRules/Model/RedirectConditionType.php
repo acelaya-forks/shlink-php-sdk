@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Shlinkio\Shlink\SDK\RedirectRules\Model;
 
 enum RedirectConditionType: string

@@ -42,8 +42,7 @@ readonly class ShlinkClient implements
         private TagsClientInterface $tagsClient,
         private DomainsClientInterface $domainsClient,
         private RedirectRulesClientInterface $redirectRulesClient,
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritDoc

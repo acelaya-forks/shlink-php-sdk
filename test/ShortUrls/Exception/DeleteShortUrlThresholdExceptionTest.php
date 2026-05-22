@@ -32,16 +32,28 @@ class DeleteShortUrlThresholdExceptionTest extends TestCase
     public static function provideExceptions(): iterable
     {
         yield [HttpException::fromPayload([]), ShortUrlIdentifier::fromShortCode(''), 0, '', -1];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 404,
-        ]), ShortUrlIdentifier::fromShortCode(''), 0, $message, $code];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 400,
-            'shortCode' => $shortCode = 'foo',
-            'domain' => $domain = 's.test',
-            'threshold' => $threshold = 15,
-        ]), ShortUrlIdentifier::fromShortCodeAndDomain($shortCode, $domain), $threshold, $message, $code];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 404,
+            ]),
+            ShortUrlIdentifier::fromShortCode(''),
+            0,
+            $message,
+            $code,
+        ];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 400,
+                'shortCode' => $shortCode = 'foo',
+                'domain' => $domain = 's.test',
+                'threshold' => $threshold = 15,
+            ]),
+            ShortUrlIdentifier::fromShortCodeAndDomain($shortCode, $domain),
+            $threshold,
+            $message,
+            $code,
+        ];
     }
 }

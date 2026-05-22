@@ -14,9 +14,7 @@ use Shlinkio\Shlink\SDK\Http\HttpClientInterface;
 
 readonly class DomainsClient implements DomainsClientInterface
 {
-    public function __construct(private HttpClientInterface $httpClient)
-    {
-    }
+    public function __construct(private HttpClientInterface $httpClient) {}
 
     /**
      * @inheritDoc

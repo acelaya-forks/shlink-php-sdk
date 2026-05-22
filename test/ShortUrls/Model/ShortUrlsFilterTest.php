@@ -27,44 +27,44 @@ class ShortUrlsFilterTest extends TestCase
     {
         $date = new DateTimeImmutable();
 
-        yield [fn () => ShortUrlsFilter::create(), []];
+        yield [ShortUrlsFilter::create(...), []];
         yield [
-            fn () => ShortUrlsFilter::create()
+            static fn () => ShortUrlsFilter::create()
                 ->since($date)
                 ->until($date),
             ['startDate' => $formatted = $date->format(DateTimeInterface::ATOM), 'endDate' => $formatted],
         ];
         yield [
-            fn () => ShortUrlsFilter::create()
+            static fn () => ShortUrlsFilter::create()
                 ->containingSomeTags('foo', 'bar')
                 ->searchingBy('searching'),
             ['tags' => ['foo', 'bar'], 'tagsMode' => 'any', 'searchTerm' => 'searching'],
         ];
         yield [
-            fn () => ShortUrlsFilter::create()->containingAllTags('foo', 'bar'),
+            static fn () => ShortUrlsFilter::create()->containingAllTags('foo', 'bar'),
             ['tags' => ['foo', 'bar'], 'tagsMode' => 'all'],
         ];
         yield [
-            fn () => ShortUrlsFilter::create()->orderingAscBy(ShortUrlListOrderField::VISITS),
+            static fn () => ShortUrlsFilter::create()->orderingAscBy(ShortUrlListOrderField::VISITS),
             ['orderBy' => 'visits-ASC'],
         ];
         yield [
-            fn () => ShortUrlsFilter::create()->orderingDescBy(ShortUrlListOrderField::LONG_URL),
+            static fn () => ShortUrlsFilter::create()->orderingDescBy(ShortUrlListOrderField::LONG_URL),
             ['orderBy' => 'longUrl-DESC'],
         ];
         yield [
-            fn () => ShortUrlsFilter::create()->excludingMaxVisitsReached()->excludingPastValidUntil(),
+            static fn () => ShortUrlsFilter::create()->excludingMaxVisitsReached()->excludingPastValidUntil(),
             ['excludeMaxVisitsReached' => 'true', 'excludePastValidUntil' => 'true'],
         ];
-        yield [fn () => ShortUrlsFilter::create()->forDomain('s.test'), ['domain' => 's.test']];
+        yield [static fn () => ShortUrlsFilter::create()->forDomain('s.test'), ['domain' => 's.test']];
         yield [
-            fn () => ShortUrlsFilter::create()->notContainingSomeTags('foo', 'bar', 'baz'),
+            static fn () => ShortUrlsFilter::create()->notContainingSomeTags('foo', 'bar', 'baz'),
             ['excludeTags' => ['foo', 'bar', 'baz'], 'excludeTagsMode' => 'any'],
         ];
         yield [
-            fn () => ShortUrlsFilter::create()->notContainingAnyTags('foo', 'bar', 'baz'),
+            static fn () => ShortUrlsFilter::create()->notContainingAnyTags('foo', 'bar', 'baz'),
             ['excludeTags' => ['foo', 'bar', 'baz'], 'excludeTagsMode' => 'all'],
         ];
-        yield [fn () => ShortUrlsFilter::create()->createdWithApiKey('foo'), ['apiKeyName' => 'foo']];
+        yield [static fn () => ShortUrlsFilter::create()->createdWithApiKey('foo'), ['apiKeyName' => 'foo']];
     }
 }

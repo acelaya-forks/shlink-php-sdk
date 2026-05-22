@@ -9,9 +9,7 @@ use Shlinkio\Shlink\SDK\Http\ApiVersion;
 
 final readonly class ShlinkConfig implements ShlinkConfigInterface
 {
-    private function __construct(private string $baseUrl, private string $apiKey, private ApiVersion $version)
-    {
-    }
+    private function __construct(private string $baseUrl, private string $apiKey, private ApiVersion $version) {}
 
     public static function fromBaseUrlAndApiKey(string $baseUrl, string $apiKey): ShlinkConfigInterface
     {

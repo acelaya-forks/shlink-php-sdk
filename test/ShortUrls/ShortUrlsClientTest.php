@@ -30,15 +30,14 @@ use function sprintf;
 class ShortUrlsClientTest extends TestCase
 {
     private ShortUrlsClient $client;
-    private MockObject & HttpClientInterface $httpClient;
+    private MockObject&HttpClientInterface $httpClient;
     private string $now;
 
     public function setUp(): void
     {
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->client = new ShortUrlsClient($this->httpClient);
-        $this->now = (new DateTimeImmutable())->format(DateTimeInterface::ATOM);
-        ;
+        $this->now = new DateTimeImmutable()->format(DateTimeInterface::ATOM);
     }
 
     #[Test]
@@ -47,37 +46,41 @@ class ShortUrlsClientTest extends TestCase
         $amountOfPages = 3;
         $now = $this->now;
 
-        $this->httpClient->expects($this->exactly($amountOfPages))->method('getFromShlink')->with(
-            '/short-urls',
-            $this->anything(),
-        )->willReturnCallback(
-            function ($_, array $query) use ($amountOfPages, $now) {
-                $page = $query['page'];
-                $data = [
-                    [
-                        'shortCode' => 'shortCode_' . $page . '_1',
-                        'longUrl' => 'longUrl_' . $page . '_1',
-                        'dateCreated' => $now,
-                    ],
-                    [
-                        'shortCode' => 'shortCode_' . $page . '_2',
-                        'longUrl' => 'longUrl_' . $page . '_2',
-                        'dateCreated' => $now,
-                    ],
-                ];
-
-                return [
-                    'shortUrls' => [
-                        'data' => $data,
-                        'pagination' => [
-                            'currentPage' => $page,
-                            'pagesCount' => $amountOfPages,
-                            'totalItems' => $amountOfPages * count($data),
+        $this->httpClient
+            ->expects($this->exactly($amountOfPages))
+            ->method('getFromShlink')
+            ->with(
+                '/short-urls',
+                $this->anything(),
+            )
+            ->willReturnCallback(
+                static function ($_, array $query) use ($amountOfPages, $now) {
+                    $page = $query['page'];
+                    $data = [
+                        [
+                            'shortCode' => 'shortCode_' . $page . '_1',
+                            'longUrl' => 'longUrl_' . $page . '_1',
+                            'dateCreated' => $now,
                         ],
-                    ],
-                ];
-            },
-        );
+                        [
+                            'shortCode' => 'shortCode_' . $page . '_2',
+                            'longUrl' => 'longUrl_' . $page . '_2',
+                            'dateCreated' => $now,
+                        ],
+                    ];
+
+                    return [
+                        'shortUrls' => [
+                            'data' => $data,
+                            'pagination' => [
+                                'currentPage' => $page,
+                                'pagesCount' => $amountOfPages,
+                                'totalItems' => $amountOfPages * count($data),
+                            ],
+                        ],
+                    ];
+                },
+            );
 
         $result = $this->client->listShortUrls();
 
@@ -88,8 +91,8 @@ class ShortUrlsClientTest extends TestCase
             $count++;
             self::assertStringStartsWith('shortCode_', $shortUrl->shortCode);
             self::assertStringStartsWith('longUrl_', $shortUrl->longUrl);
-            self::assertStringEndsWith($index % 2 === 0 ? '_1' : '_2', $shortUrl->shortCode);
-            self::assertStringEndsWith($index % 2 === 0 ? '_1' : '_2', $shortUrl->longUrl);
+            self::assertStringEndsWith(($index % 2) === 0 ? '_1' : '_2', $shortUrl->shortCode);
+            self::assertStringEndsWith(($index % 2) === 0 ? '_1' : '_2', $shortUrl->longUrl);
             self::assertStringStartsWith($shortUrl->dateCreated->format('Y-m-d'), $now);
         }
 
@@ -100,10 +103,14 @@ class ShortUrlsClientTest extends TestCase
     public function getShortUrlPerformsExpectedCall(ShortUrlIdentifier $identifier): void
     {
         $expected = ['dateCreated' => $this->now];
-        $this->httpClient->expects($this->once())->method('getFromShlink')->with(
-            sprintf('/short-urls/%s', $identifier->shortCode),
-            $this->callback(fn (array $query): bool => ($query['domain'] ?? null) === $identifier->domain),
-        )->willReturn($expected);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('getFromShlink')
+            ->with(
+                sprintf('/short-urls/%s', $identifier->shortCode),
+                $this->callback(static fn (array $query): bool => ($query['domain'] ?? null) === $identifier->domain),
+            )
+            ->willReturn($expected);
 
         $result = $this->client->getShortUrl($identifier);
 
@@ -113,12 +120,15 @@ class ShortUrlsClientTest extends TestCase
     #[Test, DataProvider('provideIdentifiers')]
     public function deleteShortUrlPerformsExpectedCall(ShortUrlIdentifier $identifier): void
     {
-        $this->httpClient->expects($this->once())->method('callShlinkWithBody')->with(
-            sprintf('/short-urls/%s', $identifier->shortCode),
-            'DELETE',
-            [],
-            $this->callback(fn (array $query): bool => ($query['domain'] ?? null) === $identifier->domain),
-        );
+        $this->httpClient
+            ->expects($this->once())
+            ->method('callShlinkWithBody')
+            ->with(
+                sprintf('/short-urls/%s', $identifier->shortCode),
+                'DELETE',
+                [],
+                $this->callback(static fn (array $query): bool => ($query['domain'] ?? null) === $identifier->domain),
+            );
 
         $this->client->deleteShortUrl($identifier);
     }
@@ -128,12 +138,16 @@ class ShortUrlsClientTest extends TestCase
     {
         $expected = ['dateCreated' => $this->now];
         $edit = ShortUrlEdition::create();
-        $this->httpClient->expects($this->once())->method('callShlinkWithBody')->with(
-            sprintf('/short-urls/%s', $identifier->shortCode),
-            'PATCH',
-            $edit,
-            $this->callback(fn (array $query): bool => ($query['domain'] ?? null) === $identifier->domain),
-        )->willReturn($expected);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('callShlinkWithBody')
+            ->with(
+                sprintf('/short-urls/%s', $identifier->shortCode),
+                'PATCH',
+                $edit,
+                $this->callback(static fn (array $query): bool => ($query['domain'] ?? null) === $identifier->domain),
+            )
+            ->willReturn($expected);
 
         $result = $this->client->editShortUrl($identifier, $edit);
 
@@ -151,11 +165,15 @@ class ShortUrlsClientTest extends TestCase
     {
         $expected = ['dateCreated' => $this->now];
         $create = ShortUrlCreation::forLongUrl('https://foo.com');
-        $this->httpClient->expects($this->once())->method('callShlinkWithBody')->with(
-            '/short-urls',
-            'POST',
-            $create,
-        )->willReturn($expected);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('callShlinkWithBody')
+            ->with(
+                '/short-urls',
+                'POST',
+                $create,
+            )
+            ->willReturn($expected);
 
         $result = $this->client->createShortUrl($create);
 
@@ -177,8 +195,8 @@ class ShortUrlsClientTest extends TestCase
     public static function provideGetExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'INVALID_SHORTCODE' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'INVALID_SHORTCODE' => [
             HttpException::fromPayload(['type' => ErrorType::SHORT_URL_NOT_FOUND->value]),
             ShortUrlNotFoundException::class,
         ];
@@ -199,12 +217,12 @@ class ShortUrlsClientTest extends TestCase
     public static function provideDeleteExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'INVALID_SHORTCODE' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'INVALID_SHORTCODE' => [
             HttpException::fromPayload(['type' => ErrorType::SHORT_URL_NOT_FOUND->value]),
             ShortUrlNotFoundException::class,
         ];
-        yield 'INVALID_SHORT_URL_DELETION' =>  [
+        yield 'INVALID_SHORT_URL_DELETION' => [
             HttpException::fromPayload(['type' => ErrorType::INVALID_SHORT_URL_DELETION->value]),
             DeleteShortUrlThresholdException::class,
         ];
@@ -225,12 +243,12 @@ class ShortUrlsClientTest extends TestCase
     public static function provideCreateExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'INVALID_ARGUMENT' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'INVALID_ARGUMENT' => [
             HttpException::fromPayload(['type' => ErrorType::INVALID_DATA->value]),
             InvalidDataException::class,
         ];
-        yield 'INVALID_SLUG' =>  [
+        yield 'INVALID_SLUG' => [
             HttpException::fromPayload(['type' => ErrorType::NON_UNIQUE_SLUG->value]),
             NonUniqueSlugException::class,
         ];
@@ -251,8 +269,8 @@ class ShortUrlsClientTest extends TestCase
     public static function provideEditExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'INVALID_SHORTCODE' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'INVALID_SHORTCODE' => [
             HttpException::fromPayload(['type' => ErrorType::SHORT_URL_NOT_FOUND->value]),
             ShortUrlNotFoundException::class,
         ];

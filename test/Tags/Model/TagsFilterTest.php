@@ -24,33 +24,35 @@ class TagsFilterTest extends TestCase
 
     public static function provideOrderings(): iterable
     {
-        yield 'no order' => [fn () => TagsFilter::create(), true];
-        yield 'tag ASC' => [fn () => TagsFilter::create()->orderingAscBy(TagsListOrderField::TAG), true];
-        yield 'tag DESC' => [fn () => TagsFilter::create()->orderingDescBy(TagsListOrderField::TAG), true];
+        yield 'no order' => [TagsFilter::create(...), true];
+        yield 'tag ASC' => [static fn () => TagsFilter::create()->orderingAscBy(TagsListOrderField::TAG), true];
+        yield 'tag DESC' => [static fn () => TagsFilter::create()->orderingDescBy(TagsListOrderField::TAG), true];
         yield 'shortUrlsCount ASC' => [
-            fn () => TagsFilter::create()->orderingAscBy(TagsListOrderField::SHORT_URLS_COUNT),
+            static fn () => TagsFilter::create()->orderingAscBy(TagsListOrderField::SHORT_URLS_COUNT),
             false,
         ];
         yield 'shortUrlsCount DESC' => [
-            fn () => TagsFilter::create()->orderingDescBy(TagsListOrderField::SHORT_URLS_COUNT),
+            static fn () => TagsFilter::create()->orderingDescBy(TagsListOrderField::SHORT_URLS_COUNT),
             false,
         ];
         yield 'visitsCount ASC' => [
-            fn () => TagsFilter::create()->orderingAscBy(TagsListOrderField::VISITS_COUNT),
+            static fn () => TagsFilter::create()->orderingAscBy(TagsListOrderField::VISITS_COUNT),
             false,
         ];
         yield 'visitsCount DESC' => [
-            fn () => TagsFilter::create()->orderingDescBy(TagsListOrderField::VISITS_COUNT),
+            static fn () => TagsFilter::create()->orderingDescBy(TagsListOrderField::VISITS_COUNT),
             false,
         ];
         yield 'override towards paginable' => [
-            fn () => TagsFilter::create()->orderingAscBy(TagsListOrderField::SHORT_URLS_COUNT)
-                                         ->orderingDescBy(TagsListOrderField::TAG),
+            static fn () => TagsFilter::create()
+                ->orderingAscBy(TagsListOrderField::SHORT_URLS_COUNT)
+                ->orderingDescBy(TagsListOrderField::TAG),
             true,
         ];
         yield 'override towards non-paginable' => [
-            fn () => TagsFilter::create()->orderingDescBy(TagsListOrderField::TAG)
-                                         ->orderingAscBy(TagsListOrderField::VISITS_COUNT),
+            static fn () => TagsFilter::create()
+                ->orderingDescBy(TagsListOrderField::TAG)
+                ->orderingAscBy(TagsListOrderField::VISITS_COUNT),
             false,
         ];
     }

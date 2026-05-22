@@ -22,7 +22,7 @@ use function count;
 class DomainsClientTest extends TestCase
 {
     private DomainsClient $domainsClient;
-    private MockObject & HttpClientInterface $httpClient;
+    private MockObject&HttpClientInterface $httpClient;
 
     public function setUp(): void
     {
@@ -63,9 +63,13 @@ class DomainsClientTest extends TestCase
             ],
         ];
 
-        $this->httpClient->expects($this->once())->method('getFromShlink')->with('/domains')->willReturn([
-            'domains' => ['data' => $payload],
-        ]);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('getFromShlink')
+            ->with('/domains')
+            ->willReturn([
+                'domains' => ['data' => $payload],
+            ]);
 
         $result = $this->domainsClient->listDomains();
         $count = 0;
@@ -99,15 +103,19 @@ class DomainsClientTest extends TestCase
             ->removingBaseUrlRedirect()
             ->removingInvalidShortUrlRedirect();
 
-        $this->httpClient->expects($this->once())->method('callShlinkWithBody')->with(
-            '/domains/redirects',
-            'PATCH',
-            $config,
-        )->willReturn([
-            DomainRedirectProps::BASE_URL->value => null,
-            DomainRedirectProps::REGULAR_NOT_FOUND->value => 'somewhere.com',
-            DomainRedirectProps::INVALID_SHORT_URL->value => null,
-        ]);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('callShlinkWithBody')
+            ->with(
+                '/domains/redirects',
+                'PATCH',
+                $config,
+            )
+            ->willReturn([
+                DomainRedirectProps::BASE_URL->value => null,
+                DomainRedirectProps::REGULAR_NOT_FOUND->value => 'somewhere.com',
+                DomainRedirectProps::INVALID_SHORT_URL->value => null,
+            ]);
 
         $result = $this->domainsClient->configureDomainRedirects($config);
 
@@ -133,8 +141,8 @@ class DomainsClientTest extends TestCase
     public static function provideExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'INVALID_ARGUMENT' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'INVALID_ARGUMENT' => [
             HttpException::fromPayload(['type' => ErrorType::INVALID_DATA->value]),
             InvalidDataException::class,
         ];

@@ -39,7 +39,7 @@ class HttpException extends RuntimeException implements ExceptionInterface
     {
         $additional = array_filter(
             $payload,
-            static fn (string $key) => ! in_array($key, self::STANDARD_PROBLEM_DETAILS_PROPS, true),
+            static fn (string $key) => !in_array($key, self::STANDARD_PROBLEM_DETAILS_PROPS, true),
             ARRAY_FILTER_USE_KEY,
         );
 

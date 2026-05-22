@@ -22,9 +22,9 @@ class DomainRedirectsConfigTest extends TestCase
 
     public static function provideConfigs(): iterable
     {
-        yield [fn () => DomainRedirectsConfig::forDomain('foo.com'), ['domain' => 'foo.com']];
+        yield [static fn () => DomainRedirectsConfig::forDomain('foo.com'), ['domain' => 'foo.com']];
         yield [
-            fn () => DomainRedirectsConfig::forDomain('foo.com')
+            static fn () => DomainRedirectsConfig::forDomain('foo.com')
                 ->withRegularNotFoundRedirect('somewhere.com'),
             [
                 'domain' => 'foo.com',
@@ -32,7 +32,7 @@ class DomainRedirectsConfigTest extends TestCase
             ],
         ];
         yield [
-            fn () => DomainRedirectsConfig::forDomain('bar.com')
+            static fn () => DomainRedirectsConfig::forDomain('bar.com')
                 ->withRegularNotFoundRedirect('foo.com')
                 ->removingBaseUrlRedirect(),
             [
@@ -42,7 +42,7 @@ class DomainRedirectsConfigTest extends TestCase
             ],
         ];
         yield [
-            fn () => DomainRedirectsConfig::forDomain('bar.com')
+            static fn () => DomainRedirectsConfig::forDomain('bar.com')
                 ->withRegularNotFoundRedirect('foo.net')
                 ->withInvalidShortUrlRedirect('something.com')
                 ->removingBaseUrlRedirect(),
@@ -54,7 +54,7 @@ class DomainRedirectsConfigTest extends TestCase
             ],
         ];
         yield [
-            fn () => DomainRedirectsConfig::forDomain('baz.com')
+            static fn () => DomainRedirectsConfig::forDomain('baz.com')
                 ->removingBaseUrlRedirect()
                 ->removingRegularNotFoundRedirect()
                 ->removingInvalidShortUrlRedirect(),
@@ -66,7 +66,7 @@ class DomainRedirectsConfigTest extends TestCase
             ],
         ];
         yield [
-            fn () => DomainRedirectsConfig::forDomain('foobarbaz.com')
+            static fn () => DomainRedirectsConfig::forDomain('foobarbaz.com')
                 ->withRegularNotFoundRedirect('foo.net')
                 ->withInvalidShortUrlRedirect('something.com')
                 ->withBaseUrlRedirect('base-redirect.com'),

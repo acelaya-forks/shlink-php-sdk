@@ -8,9 +8,7 @@ use DateTimeInterface;
 
 trait VisitsFilterPayloadTrait
 {
-    private function __construct(private array $query = [])
-    {
-    }
+    private function __construct(private array $query = []) {}
 
     public static function create(): self
     {

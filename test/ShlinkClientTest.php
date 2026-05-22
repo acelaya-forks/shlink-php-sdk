@@ -41,11 +41,11 @@ use Shlinkio\Shlink\SDK\Visits\VisitsClientInterface;
 class ShlinkClientTest extends TestCase
 {
     private ShlinkClient $shlinkClient;
-    private MockObject & ShortUrlsClientInterface $shortUrlsClient;
-    private MockObject & VisitsClientInterface $visitsClient;
-    private MockObject & TagsClientInterface $tagsClient;
-    private MockObject & DomainsClientInterface $domainsClient;
-    private MockObject & RedirectRulesClientInterface $redirectRulesClient;
+    private MockObject&ShortUrlsClientInterface $shortUrlsClient;
+    private MockObject&VisitsClientInterface $visitsClient;
+    private MockObject&TagsClientInterface $tagsClient;
+    private MockObject&DomainsClientInterface $domainsClient;
+    private MockObject&RedirectRulesClientInterface $redirectRulesClient;
 
     public function setUp(): void
     {
@@ -74,18 +74,24 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function configureDomainRedirectsDelegatesCallToProperClient(): void
     {
-        $this->domainsClient->expects($this->once())->method('configureDomainRedirects')->willReturn(
-            DomainRedirects::fromArray([]),
-        );
+        $this->domainsClient
+            ->expects($this->once())
+            ->method('configureDomainRedirects')
+            ->willReturn(
+                DomainRedirects::fromArray([]),
+            );
         $this->shlinkClient->configureDomainRedirects(DomainRedirectsConfig::forDomain('foo.com'));
     }
 
     #[Test]
     public function listShortUrlsDelegatesCallToProperClient(): void
     {
-        $this->shortUrlsClient->expects($this->once())->method('listShortUrls')->willReturn(
-            ShortUrlsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->shortUrlsClient
+            ->expects($this->once())
+            ->method('listShortUrls')
+            ->willReturn(
+                ShortUrlsList::forTupleLoader(static fn () => [[], []]),
+            );
         $this->shlinkClient->listShortUrls();
     }
 
@@ -93,9 +99,13 @@ class ShlinkClientTest extends TestCase
     public function listShortUrlsWithFilterDelegatesCallToProperClient(): void
     {
         $filter = ShortUrlsFilter::create();
-        $this->shortUrlsClient->expects($this->once())->method('listShortUrlsWithFilter')->with($filter)->willReturn(
-            ShortUrlsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->shortUrlsClient
+            ->expects($this->once())
+            ->method('listShortUrlsWithFilter')
+            ->with($filter)
+            ->willReturn(
+                ShortUrlsList::forTupleLoader(static fn () => [[], []]),
+            );
 
         $this->shlinkClient->listShortUrlsWithFilter($filter);
     }
@@ -104,9 +114,13 @@ class ShlinkClientTest extends TestCase
     public function getShortUrlDelegatesCallToProperClient(): void
     {
         $identifier = ShortUrlIdentifier::fromShortCode('foo');
-        $this->shortUrlsClient->expects($this->once())->method('getShortUrl')->with($identifier)->willReturn(
-            ShortUrl::fromArray(['dateCreated' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM)]),
-        );
+        $this->shortUrlsClient
+            ->expects($this->once())
+            ->method('getShortUrl')
+            ->with($identifier)
+            ->willReturn(
+                ShortUrl::fromArray(['dateCreated' => new DateTimeImmutable()->format(DateTimeInterface::ATOM)]),
+            );
 
         $this->shlinkClient->getShortUrl($identifier);
     }
@@ -124,9 +138,13 @@ class ShlinkClientTest extends TestCase
     public function createShortUrlDelegatesCallToProperClient(): void
     {
         $data = ShortUrlCreation::forLongUrl('https://foo.com');
-        $this->shortUrlsClient->expects($this->once())->method('createShortUrl')->with($data)->willReturn(
-            ShortUrl::fromArray(['dateCreated' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM)]),
-        );
+        $this->shortUrlsClient
+            ->expects($this->once())
+            ->method('createShortUrl')
+            ->with($data)
+            ->willReturn(
+                ShortUrl::fromArray(['dateCreated' => new DateTimeImmutable()->format(DateTimeInterface::ATOM)]),
+            );
 
         $this->shlinkClient->createShortUrl($data);
     }
@@ -136,9 +154,13 @@ class ShlinkClientTest extends TestCase
     {
         $identifier = ShortUrlIdentifier::fromShortCode('foo');
         $data = ShortUrlEdition::create();
-        $this->shortUrlsClient->expects($this->once())->method('editShortUrl')->with($identifier, $data)->willReturn(
-            ShortUrl::fromArray(['dateCreated' => (new DateTimeImmutable())->format(DateTimeInterface::ATOM)]),
-        );
+        $this->shortUrlsClient
+            ->expects($this->once())
+            ->method('editShortUrl')
+            ->with($identifier, $data)
+            ->willReturn(
+                ShortUrl::fromArray(['dateCreated' => new DateTimeImmutable()->format(DateTimeInterface::ATOM)]),
+            );
 
         $this->shlinkClient->editShortUrl($identifier, $data);
     }
@@ -162,9 +184,12 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function listTagsWithStatsDelegatesCallToProperClient(): void
     {
-        $this->tagsClient->expects($this->once())->method('listTagsWithStats')->willReturn(
-            TagsWithStatsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->tagsClient
+            ->expects($this->once())
+            ->method('listTagsWithStats')
+            ->willReturn(
+                TagsWithStatsList::forTupleLoader(static fn () => [[], []]),
+            );
         $this->shlinkClient->listTagsWithStats();
     }
 
@@ -172,9 +197,13 @@ class ShlinkClientTest extends TestCase
     public function listTagsWithStatsWithFilterDelegatesCallToProperClient(): void
     {
         $filter = TagsFilter::create();
-        $this->tagsClient->expects($this->once())->method('listTagsWithStatsWithFilter')->with($filter)->willReturn(
-            TagsWithStatsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->tagsClient
+            ->expects($this->once())
+            ->method('listTagsWithStatsWithFilter')
+            ->with($filter)
+            ->willReturn(
+                TagsWithStatsList::forTupleLoader(static fn () => [[], []]),
+            );
 
         $this->shlinkClient->listTagsWithStatsWithFilter($filter);
     }
@@ -198,9 +227,12 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function getVisitsOverviewDelegatesCallToProperClient(): void
     {
-        $this->visitsClient->expects($this->once())->method('getVisitsOverview')->willReturn(
-            VisitsOverview::fromArray([]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('getVisitsOverview')
+            ->willReturn(
+                VisitsOverview::fromArray([]),
+            );
         $this->shlinkClient->getVisitsOverview();
     }
 
@@ -208,9 +240,13 @@ class ShlinkClientTest extends TestCase
     public function listShortUrlVisitsDelegatesCallToProperClient(): void
     {
         $identifier = ShortUrlIdentifier::fromShortCode('foo');
-        $this->visitsClient->expects($this->once())->method('listShortUrlVisits')->with($identifier)->willReturn(
-            VisitsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listShortUrlVisits')
+            ->with($identifier)
+            ->willReturn(
+                VisitsList::forTupleLoader(static fn () => [[], []]),
+            );
 
         $this->shlinkClient->listShortUrlVisits($identifier);
     }
@@ -220,10 +256,14 @@ class ShlinkClientTest extends TestCase
     {
         $identifier = ShortUrlIdentifier::fromShortCode('foo');
         $filter = VisitsFilter::create();
-        $this->visitsClient->expects($this->once())->method('listShortUrlVisitsWithFilter')->with(
-            $identifier,
-            $filter,
-        )->willReturn(VisitsList::forTupleLoader(static fn () => [[], []]));
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listShortUrlVisitsWithFilter')
+            ->with(
+                $identifier,
+                $filter,
+            )
+            ->willReturn(VisitsList::forTupleLoader(static fn () => [[], []]));
 
         $this->shlinkClient->listShortUrlVisitsWithFilter($identifier, $filter);
     }
@@ -231,9 +271,13 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function listTagVisitsDelegatesCallToProperClient(): void
     {
-        $this->visitsClient->expects($this->once())->method('listTagVisits')->with('foo')->willReturn(
-            VisitsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listTagVisits')
+            ->with('foo')
+            ->willReturn(
+                VisitsList::forTupleLoader(static fn () => [[], []]),
+            );
         $this->shlinkClient->listTagVisits('foo');
     }
 
@@ -241,10 +285,14 @@ class ShlinkClientTest extends TestCase
     public function listTagVisitsWithFilterDelegatesCallToProperClient(): void
     {
         $filter = VisitsFilter::create();
-        $this->visitsClient->expects($this->once())->method('listTagVisitsWithFilter')->with(
-            'foo',
-            $filter,
-        )->willReturn(VisitsList::forTupleLoader(static fn () => [[], []]));
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listTagVisitsWithFilter')
+            ->with(
+                'foo',
+                $filter,
+            )
+            ->willReturn(VisitsList::forTupleLoader(static fn () => [[], []]));
 
         $this->shlinkClient->listTagVisitsWithFilter('foo', $filter);
     }
@@ -252,9 +300,12 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function listDefaultDomainVisitsDelegatesCallToProperClient(): void
     {
-        $this->visitsClient->expects($this->once())->method('listDefaultDOmainVisits')->willReturn(
-            VisitsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listDefaultDOmainVisits')
+            ->willReturn(
+                VisitsList::forTupleLoader(static fn () => [[], []]),
+            );
         $this->shlinkClient->listDefaultDOmainVisits();
     }
 
@@ -262,9 +313,13 @@ class ShlinkClientTest extends TestCase
     public function listDefaultDomainVisitsWithFilterDelegatesCallToProperClient(): void
     {
         $filter = VisitsFilter::create();
-        $this->visitsClient->expects($this->once())->method('listDefaultDOmainVisitsWithFilter')->with(
-            $filter,
-        )->willReturn(VisitsList::forTupleLoader(static fn () => [[], []]));
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listDefaultDOmainVisitsWithFilter')
+            ->with(
+                $filter,
+            )
+            ->willReturn(VisitsList::forTupleLoader(static fn () => [[], []]));
 
         $this->shlinkClient->listDefaultDOmainVisitsWithFilter($filter);
     }
@@ -272,9 +327,13 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function listDomainVisitsDelegatesCallToProperClient(): void
     {
-        $this->visitsClient->expects($this->once())->method('listDomainVisits')->with('foo.com')->willReturn(
-            VisitsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listDomainVisits')
+            ->with('foo.com')
+            ->willReturn(
+                VisitsList::forTupleLoader(static fn () => [[], []]),
+            );
         $this->shlinkClient->listDomainVisits('foo.com');
     }
 
@@ -282,10 +341,14 @@ class ShlinkClientTest extends TestCase
     public function listDomainVisitsWithFilterDelegatesCallToProperClient(): void
     {
         $filter = VisitsFilter::create();
-        $this->visitsClient->expects($this->once())->method('listDomainVisitsWithFilter')->with(
-            'foo.com',
-            $filter,
-        )->willReturn(VisitsList::forTupleLoader(static fn () => [[], []]));
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listDomainVisitsWithFilter')
+            ->with(
+                'foo.com',
+                $filter,
+            )
+            ->willReturn(VisitsList::forTupleLoader(static fn () => [[], []]));
 
         $this->shlinkClient->listDomainVisitsWithFilter('foo.com', $filter);
     }
@@ -293,9 +356,12 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function listOrphanVisitsDelegatesCallToProperClient(): void
     {
-        $this->visitsClient->expects($this->once())->method('listOrphanVisits')->willReturn(
-            VisitsList::forOrphanVisitsTupleLoader(static fn () => [[], []]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listOrphanVisits')
+            ->willReturn(
+                VisitsList::forOrphanVisitsTupleLoader(static fn () => [[], []]),
+            );
         $this->shlinkClient->listOrphanVisits();
     }
 
@@ -313,9 +379,13 @@ class ShlinkClientTest extends TestCase
             OrphanVisitType::REGULAR_NOT_FOUND => OrphanVisitsFilter::create()->onlyIncludingRegularNotFound(),
         };
 
-        $this->visitsClient->expects($this->once())->method('listOrphanVisitsWithFilter')->with(
-            $filter,
-        )->willReturn(VisitsList::forOrphanVisitsTupleLoader(static fn () => [[], []]));
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listOrphanVisitsWithFilter')
+            ->with(
+                $filter,
+            )
+            ->willReturn(VisitsList::forOrphanVisitsTupleLoader(static fn () => [[], []]));
 
         $this->shlinkClient->listOrphanVisitsWithFilter($filter);
     }
@@ -323,9 +393,12 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function listNonOrphanVisitsDelegatesCallToProperClient(): void
     {
-        $this->visitsClient->expects($this->once())->method('listNonOrphanVisits')->willReturn(
-            VisitsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listNonOrphanVisits')
+            ->willReturn(
+                VisitsList::forTupleLoader(static fn () => [[], []]),
+            );
         $this->shlinkClient->listNonOrphanVisits();
     }
 
@@ -333,9 +406,13 @@ class ShlinkClientTest extends TestCase
     public function listNonOrphanVisitsWithFilterDelegatesCallToProperClient(): void
     {
         $filter = VisitsFilter::create();
-        $this->visitsClient->expects($this->once())->method('listNonOrphanVisitsWithFilter')->with($filter)->willReturn(
-            VisitsList::forTupleLoader(static fn () => [[], []]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('listNonOrphanVisitsWithFilter')
+            ->with($filter)
+            ->willReturn(
+                VisitsList::forTupleLoader(static fn () => [[], []]),
+            );
 
         $this->shlinkClient->listNonOrphanVisitsWithFilter($filter);
     }
@@ -343,9 +420,12 @@ class ShlinkClientTest extends TestCase
     #[Test]
     public function deleteOrphanVisitsDelegatesCallToProperClient(): void
     {
-        $this->visitsClient->expects($this->once())->method('deleteOrphanVisits')->willReturn(
-            VisitsDeletion::fromArray([]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('deleteOrphanVisits')
+            ->willReturn(
+                VisitsDeletion::fromArray([]),
+            );
         $this->shlinkClient->deleteOrphanVisits();
     }
 
@@ -353,9 +433,13 @@ class ShlinkClientTest extends TestCase
     public function deleteShortUrlVisitsDelegatesCallToProperClient(): void
     {
         $identifier = ShortUrlIdentifier::fromShortCode('foo');
-        $this->visitsClient->expects($this->once())->method('deleteShortUrlVisits')->with($identifier)->willReturn(
-            VisitsDeletion::fromArray([]),
-        );
+        $this->visitsClient
+            ->expects($this->once())
+            ->method('deleteShortUrlVisits')
+            ->with($identifier)
+            ->willReturn(
+                VisitsDeletion::fromArray([]),
+            );
         $this->shlinkClient->deleteShortUrlVisits($identifier);
     }
 
@@ -363,9 +447,13 @@ class ShlinkClientTest extends TestCase
     public function getShortUrlRedirectRulesDelegatesCallToProperClient(): void
     {
         $identifier = ShortUrlIdentifier::fromShortCode('foo');
-        $this->redirectRulesClient->expects($this->once())->method('getShortUrlRedirectRules')->with(
-            $identifier,
-        )->willReturn(RedirectRulesList::fromArray([]));
+        $this->redirectRulesClient
+            ->expects($this->once())
+            ->method('getShortUrlRedirectRules')
+            ->with(
+                $identifier,
+            )
+            ->willReturn(RedirectRulesList::fromArray([]));
         $this->shlinkClient->getShortUrlRedirectRules($identifier);
     }
 
@@ -374,10 +462,14 @@ class ShlinkClientTest extends TestCase
     {
         $identifier = ShortUrlIdentifier::fromShortCode('foo');
         $rules = SetRedirectRules::fromScratch();
-        $this->redirectRulesClient->expects($this->once())->method('setShortUrlRedirectRules')->with(
-            $identifier,
-            $rules,
-        )->willReturn(RedirectRulesList::fromArray([]));
+        $this->redirectRulesClient
+            ->expects($this->once())
+            ->method('setShortUrlRedirectRules')
+            ->with(
+                $identifier,
+                $rules,
+            )
+            ->willReturn(RedirectRulesList::fromArray([]));
         $this->shlinkClient->setShortUrlRedirectRules($identifier, $rules);
     }
 }

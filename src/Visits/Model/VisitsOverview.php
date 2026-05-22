@@ -8,9 +8,7 @@ use Countable;
 
 final readonly class VisitsOverview implements Countable
 {
-    private function __construct(public VisitsSummary $nonOrphanVisits, public VisitsSummary $orphanVisits)
-    {
-    }
+    private function __construct(public VisitsSummary $nonOrphanVisits, public VisitsSummary $orphanVisits) {}
 
     public static function fromArray(array $payload): self
     {

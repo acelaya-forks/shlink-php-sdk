@@ -8,9 +8,7 @@ use DateTimeInterface;
 
 final readonly class OrphanVisit implements VisitInterface
 {
-    private function __construct(private Visit $visit, private OrphanVisitType $type)
-    {
-    }
+    private function __construct(private Visit $visit, private OrphanVisitType $type) {}
 
     public static function fromArray(array $payload): self
     {

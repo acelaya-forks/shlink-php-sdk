@@ -42,9 +42,18 @@ class OrphanVisitTest extends TestCase
         $now = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');
         $formattedDate = $now->format(DateTimeInterface::ATOM); // @phpstan-ignore-line
 
-        yield 'defaults' => [[
-            'date' => $formattedDate,
-        ], '', $now, '', false, null, '', OrphanVisitType::REGULAR_NOT_FOUND];
+        yield 'defaults' => [
+            [
+                'date' => $formattedDate,
+            ],
+            '',
+            $now,
+            '',
+            false,
+            null,
+            '',
+            OrphanVisitType::REGULAR_NOT_FOUND,
+        ];
         yield 'all data' => [
             [
                 'referer' => 'referer',

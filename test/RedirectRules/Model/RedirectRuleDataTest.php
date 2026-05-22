@@ -27,14 +27,17 @@ class RedirectRuleDataTest extends TestCase
         ]);
         $data = RedirectRuleData::fromRedirectRule($redirectRule);
 
-        self::assertEquals([
-            'longUrl' => 'https://example.com',
-            'conditions' => [
-                RedirectCondition::fromArray([]),
-                RedirectCondition::fromArray([]),
-                RedirectCondition::fromArray([]),
+        self::assertEquals(
+            [
+                'longUrl' => 'https://example.com',
+                'conditions' => [
+                    RedirectCondition::fromArray([]),
+                    RedirectCondition::fromArray([]),
+                    RedirectCondition::fromArray([]),
+                ],
             ],
-        ], $data->jsonSerialize());
+            $data->jsonSerialize(),
+        );
     }
 
     #[Test]

@@ -30,20 +30,35 @@ class ShortUrlNotFoundExceptionTest extends TestCase
     public static function provideExceptions(): iterable
     {
         yield [HttpException::fromPayload([]), ShortUrlIdentifier::fromShortCode(''), '', -1];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 404,
-        ]), ShortUrlIdentifier::fromShortCode(''), $message, $code];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 400,
-            'shortCode' => $shortCode = 'foo',
-        ]), ShortUrlIdentifier::fromShortCode($shortCode), $message, $code];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 400,
-            'shortCode' => $shortCode = 'foo',
-            'domain' => $domain = 's.test',
-        ]), ShortUrlIdentifier::fromShortCodeAndDomain($shortCode, $domain), $message, $code];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 404,
+            ]),
+            ShortUrlIdentifier::fromShortCode(''),
+            $message,
+            $code,
+        ];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 400,
+                'shortCode' => $shortCode = 'foo',
+            ]),
+            ShortUrlIdentifier::fromShortCode($shortCode),
+            $message,
+            $code,
+        ];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 400,
+                'shortCode' => $shortCode = 'foo',
+                'domain' => $domain = 's.test',
+            ]),
+            ShortUrlIdentifier::fromShortCodeAndDomain($shortCode, $domain),
+            $message,
+            $code,
+        ];
     }
 }

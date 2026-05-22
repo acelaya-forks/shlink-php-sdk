@@ -17,8 +17,7 @@ final readonly class Visit implements VisitInterface
         private string $visitedUrl,
         private string|null $redirectUrl,
         private VisitLocation|null $location,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $payload): self
     {

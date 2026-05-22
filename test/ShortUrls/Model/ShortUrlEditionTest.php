@@ -26,9 +26,9 @@ class ShortUrlEditionTest extends TestCase
     {
         $date = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');
 
-        yield [fn () => ShortUrlEdition::create(), []];
+        yield [ShortUrlEdition::create(...), []];
         yield [
-            fn () => ShortUrlEdition::create()
+            static fn () => ShortUrlEdition::create()
                 ->withTags('foo', 'bar')
                 ->validUntil($date) // @phpstan-ignore-line
                 ->withTitle('the title')
@@ -41,13 +41,13 @@ class ShortUrlEditionTest extends TestCase
             ],
         ];
         yield [
-            fn () => ShortUrlEdition::create()
+            static fn () => ShortUrlEdition::create()
                 ->withLongUrl('https://edited.com/foo/bar')
                 ->withoutTags(),
             ['longUrl' => 'https://edited.com/foo/bar', 'tags' => []],
         ];
         yield [
-            fn () => ShortUrlEdition::create()
+            static fn () => ShortUrlEdition::create()
                 ->removingValidUntil()
                 ->removingValidSince()
                 ->removingMaxVisits()

@@ -26,13 +26,13 @@ class ShortUrlCreationTest extends TestCase
     {
         $date = DateTimeImmutable::createFromFormat('Y-m-d', '2021-01-01');
 
-        yield [fn () => ShortUrlCreation::forLongUrl('https://foo.com'), ['longUrl' => 'https://foo.com']];
+        yield [static fn () => ShortUrlCreation::forLongUrl('https://foo.com'), ['longUrl' => 'https://foo.com']];
         yield [
-            fn () => ShortUrlCreation::forLongUrl('https://foo.com')->returnExistingMatchingShortUrl(),
+            static fn () => ShortUrlCreation::forLongUrl('https://foo.com')->returnExistingMatchingShortUrl(),
             ['longUrl' => 'https://foo.com', 'findIfExists' => true],
         ];
         yield [
-            fn () => ShortUrlCreation::forLongUrl('https://foo.com')
+            static fn () => ShortUrlCreation::forLongUrl('https://foo.com')
                 ->withTags('foo', 'bar')
                 ->validSince($date) // @phpstan-ignore-line
                 ->withCustomSlug('some-slug')
@@ -46,25 +46,25 @@ class ShortUrlCreationTest extends TestCase
             ],
         ];
         yield [
-            fn () => ShortUrlCreation::forLongUrl('https://foo.com')
+            static fn () => ShortUrlCreation::forLongUrl('https://foo.com')
                 ->withCustomSlug('some-slug')
                 ->withPathPrefix('my-prefix-')
                 ->withShortCodeLength(50),
             ['longUrl' => 'https://foo.com', 'pathPrefix' => 'my-prefix-', 'shortCodeLength' => 50],
         ];
         yield [
-            fn () => ShortUrlCreation::forLongUrl('https://foo.com')
+            static fn () => ShortUrlCreation::forLongUrl('https://foo.com')
                 ->withShortCodeLength(50)
                 ->withCustomSlug('some-slug')
                 ->withPathPrefix('my-prefix-'),
             ['longUrl' => 'https://foo.com', 'customSlug' => 'some-slug', 'pathPrefix' => 'my-prefix-'],
         ];
         yield [
-            fn () => ShortUrlCreation::forLongUrl('https://foo.com')->crawlable(),
+            static fn () => ShortUrlCreation::forLongUrl('https://foo.com')->crawlable(),
             ['longUrl' => 'https://foo.com', 'crawlable' => true],
         ];
         yield [
-            fn () => ShortUrlCreation::forLongUrl('https://foo.com')
+            static fn () => ShortUrlCreation::forLongUrl('https://foo.com')
                 ->withoutQueryForwardingOnRedirect()
                 ->forDomain('s.test'),
             ['longUrl' => 'https://foo.com', 'forwardQuery' => false, 'domain' => 's.test'],

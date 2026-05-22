@@ -30,7 +30,7 @@ final class VisitsList extends ListEndpointIterator
      */
     public static function forTupleLoader(Closure $visitsLoader): self
     {
-        return new self($visitsLoader, static fn (array $value) => Visit::fromArray($value));
+        return new self($visitsLoader, Visit::fromArray(...));
     }
 
     /**
@@ -39,6 +39,6 @@ final class VisitsList extends ListEndpointIterator
      */
     public static function forOrphanVisitsTupleLoader(Closure $visitsLoader): self
     {
-        return new self($visitsLoader, static fn (array $value) => OrphanVisit::fromArray($value));
+        return new self($visitsLoader, OrphanVisit::fromArray(...));
     }
 }

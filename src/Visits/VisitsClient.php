@@ -23,9 +23,7 @@ use function sprintf;
 
 readonly class VisitsClient implements VisitsClientInterface
 {
-    public function __construct(private HttpClientInterface $httpClient)
-    {
-    }
+    public function __construct(private HttpClientInterface $httpClient) {}
 
     public function getVisitsOverview(): VisitsOverview
     {

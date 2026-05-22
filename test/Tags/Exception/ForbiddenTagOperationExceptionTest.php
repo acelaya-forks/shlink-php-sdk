@@ -24,9 +24,13 @@ class ForbiddenTagOperationExceptionTest extends TestCase
     public static function provideExceptions(): iterable
     {
         yield [HttpException::fromPayload([]), '', -1];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 404,
-        ]), $message, $code];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 404,
+            ]),
+            $message,
+            $code,
+        ];
     }
 }

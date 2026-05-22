@@ -8,9 +8,7 @@ use JsonSerializable;
 
 final class DomainRedirectsConfig implements JsonSerializable
 {
-    private function __construct(private array $payload = [])
-    {
-    }
+    private function __construct(private array $payload = []) {}
 
     public static function forDomain(string $domain): self
     {
