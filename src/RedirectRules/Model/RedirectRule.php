@@ -16,9 +16,7 @@ final readonly class RedirectRule implements Countable
      * @param RedirectCondition[] $conditions
      * @param positive-int $priority
      */
-    private function __construct(public string $longUrl, public int $priority, public array $conditions)
-    {
-    }
+    private function __construct(public string $longUrl, public int $priority, public array $conditions) {}
 
     public static function fromArray(array $payload): self
     {
@@ -26,7 +24,7 @@ final readonly class RedirectRule implements Countable
             longUrl: $payload['longUrl'] ?? '',
             priority: max((int) ($payload['priority'] ?? 1), 1),
             conditions: array_map(
-                static fn (array $condition) => RedirectCondition::fromArray($condition),
+                RedirectCondition::fromArray(...),
                 $payload['conditions'] ?? [],
             ),
         );

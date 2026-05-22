@@ -26,19 +26,23 @@ use Shlinkio\Shlink\SDK\Utils\ArraySerializable;
 class HttpClientTest extends TestCase
 {
     private HttpClient $httpClient;
-    private MockObject & ClientInterface $client;
+    private MockObject&ClientInterface $client;
 
     public function setUp(): void
     {
         $this->client = $this->createMock(ClientInterface::class);
 
         $requestFactory = $this->createStub(RequestFactoryInterface::class);
-        $requestFactory->method('createRequest')->willReturnCallback(
-            fn (string $method, string|UriInterface $uri) => new Request($method, $uri),
-        );
+        $requestFactory
+            ->method('createRequest')
+            ->willReturnCallback(
+                static fn (string $method, string|UriInterface $uri) => new Request($method, $uri),
+            );
 
         $streamFactory = $this->createStub(StreamFactoryInterface::class);
-        $streamFactory->method('createStream')->willReturnCallback(fn (string $content) => Utils::streamFor($content));
+        $streamFactory
+            ->method('createStream')
+            ->willReturnCallback(Utils::streamFor(...));
 
         $this->httpClient = new HttpClient(
             $this->client,
@@ -54,16 +58,20 @@ class HttpClientTest extends TestCase
         array|ArraySerializable $query,
         string $expectedUri,
     ): void {
-        $this->client->expects($this->once())->method('sendRequest')->with($this->callback(
-            function (RequestInterface $req) use ($expectedUri) {
-                Assert::assertEquals($expectedUri, $req->getUri()->__toString());
-                Assert::assertEquals('GET', $req->getMethod());
-                Assert::assertTrue($req->hasHeader('X-Api-Key'));
-                Assert::assertEquals('123', $req->getHeaderLine('X-Api-Key'));
+        $this->client
+            ->expects($this->once())
+            ->method('sendRequest')
+            ->with($this->callback(
+                static function (RequestInterface $req) use ($expectedUri) {
+                    Assert::assertEquals($expectedUri, $req->getUri()->__toString());
+                    Assert::assertEquals('GET', $req->getMethod());
+                    Assert::assertTrue($req->hasHeader('X-Api-Key'));
+                    Assert::assertEquals('123', $req->getHeaderLine('X-Api-Key'));
 
-                return true;
-            },
-        ))->willReturn(new Response(200, [], '{}'));
+                    return true;
+                },
+            ))
+            ->willReturn(new Response(200, [], '{}'));
 
         $this->httpClient->getFromShlink($path, $query);
     }
@@ -87,7 +95,10 @@ class HttpClientTest extends TestCase
     #[Test, DataProvider('provideNonSuccessfulStatuses')]
     public function nonSuccessfulResponseResultsInException(int $status): void
     {
-        $this->client->expects($this->once())->method('sendRequest')->willReturn(new Response($status, [], '{}'));
+        $this->client
+            ->expects($this->once())
+            ->method('sendRequest')
+            ->willReturn(new Response($status, [], '{}'));
 
         $this->expectException(HttpException::class);
 
@@ -107,9 +118,12 @@ class HttpClientTest extends TestCase
     #[Test, DataProvider('provideSuccessfulStatuses')]
     public function returnsExpectedResultBasedOnResponseStatus(int $status, array $expectedResult): void
     {
-        $this->client->expects($this->once())->method('sendRequest')->willReturn(
-            new Response($status, [], '{"foo": "bar"}'),
-        );
+        $this->client
+            ->expects($this->once())
+            ->method('sendRequest')
+            ->willReturn(
+                new Response($status, [], '{"foo": "bar"}'),
+            );
 
         $result = $this->httpClient->getFromShlink('');
 
@@ -130,16 +144,20 @@ class HttpClientTest extends TestCase
         array|JsonSerializable $body,
         string $expectedBody,
     ): void {
-        $this->client->expects($this->once())->method('sendRequest')->with(
-            $this->callback(function (RequestInterface $req) use ($expectedBody, $method) {
-                Assert::assertEquals($expectedBody, $req->getBody()->__toString());
-                Assert::assertEquals($method, $req->getMethod());
-                Assert::assertTrue($req->hasHeader('X-Api-Key'));
-                Assert::assertEquals('123', $req->getHeaderLine('X-Api-Key'));
+        $this->client
+            ->expects($this->once())
+            ->method('sendRequest')
+            ->with(
+                $this->callback(static function (RequestInterface $req) use ($expectedBody, $method) {
+                    Assert::assertEquals($expectedBody, $req->getBody()->__toString());
+                    Assert::assertEquals($method, $req->getMethod());
+                    Assert::assertTrue($req->hasHeader('X-Api-Key'));
+                    Assert::assertEquals('123', $req->getHeaderLine('X-Api-Key'));
 
-                return true;
-            }),
-        )->willReturn(new Response(200, [], '{}'));
+                    return true;
+                }),
+            )
+            ->willReturn(new Response(200, [], '{}'));
 
         $this->httpClient->callShlinkWithBody('/foo/bar', $method, $body);
     }

@@ -22,9 +22,10 @@ class TagsClientTest extends AbstractTestCase
     {
         $this->client = new TagsClient(self::httpClient());
 
-        self::shlinkClient()->createShortUrl(
-            ShortUrlCreation::forLongUrl('https://example.com')->withTags(...self::BASE_TAGS),
-        );
+        self::shlinkClient()
+            ->createShortUrl(
+                ShortUrlCreation::forLongUrl('https://example.com')->withTags(...self::BASE_TAGS),
+            );
     }
 
     #[Test]

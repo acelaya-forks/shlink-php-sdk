@@ -14,8 +14,7 @@ final readonly class VisitLocation
         public float $latitude,
         public float $longitude,
         public string $timezone,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $payload): self
     {

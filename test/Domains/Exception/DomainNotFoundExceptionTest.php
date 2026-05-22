@@ -29,14 +29,24 @@ class DomainNotFoundExceptionTest extends TestCase
     public static function provideExceptions(): iterable
     {
         yield [HttpException::fromPayload([]), '', '', -1];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 400,
-        ]), '', $message, $code];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message again',
-            'status' => $code = 404,
-            'authority' => $authority = 'authority',
-        ]), $authority, $message, $code];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 400,
+            ]),
+            '',
+            $message,
+            $code,
+        ];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message again',
+                'status' => $code = 404,
+                'authority' => $authority = 'authority',
+            ]),
+            $authority,
+            $message,
+            $code,
+        ];
     }
 }

@@ -29,8 +29,7 @@ readonly class HttpClient implements HttpClientInterface
         private StreamFactoryInterface $streamFactory,
         private ShlinkConfigInterface $config,
         private HttpDebuggerInterface|null $debugger = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws HttpException
@@ -63,16 +62,16 @@ readonly class HttpClient implements HttpClientInterface
         array $query = [],
     ): array {
         $uri = sprintf('%s/rest/v%s%s', $this->config->baseUrl(), $this->config->version()->value, $path);
-        if (! empty($query)) {
+        if (!empty($query)) {
             $uri = sprintf('%s?%s', $uri, http_build_query($query));
         }
 
         $req = $this->requestFactory->createRequest($method, $uri)
-                                    ->withHeader('X-Api-Key', $this->config->apiKey());
+            ->withHeader('X-Api-Key', $this->config->apiKey());
 
         if ($body !== null) {
             $req = $req->withHeader('Content-Type', 'application/json')
-                       ->withBody($this->streamFactory->createStream(json_encode($body, JSON_THROW_ON_ERROR)));
+                ->withBody($this->streamFactory->createStream(json_encode($body, JSON_THROW_ON_ERROR)));
         }
 
         $this->debugger?->debugRequest($req);

@@ -26,17 +26,21 @@ class ArrayShlinkConfigTest extends TestCase
 
     public static function provideInvalidData(): iterable
     {
-        $standardMessage = 'Provided array is missing "baseUrl" and/or "apiKey" props, or their values are invalid. '
+        $standardMessage =
+            'Provided array is missing "baseUrl" and/or "apiKey" props, or their values are invalid. '
             . 'Make sure both are set with strings.';
 
         yield 'both missing' => [[], $standardMessage];
         yield 'missing api key' => [[ArrayShlinkConfig::BASE_URL_PROP => 'foo'], $standardMessage];
         yield 'missing base url' => [[ArrayShlinkConfig::API_KEY_PROP => 'bar'], $standardMessage];
-        yield 'invalid version' => [[
-            ArrayShlinkConfig::BASE_URL_PROP => 'foo',
-            ArrayShlinkConfig::API_KEY_PROP => 'bar',
-            ArrayShlinkConfig::VERSION_PROP => '2',
-        ], 'Provided version "2" is invalid. Expected one of ["3"]'];
+        yield 'invalid version' => [
+            [
+                ArrayShlinkConfig::BASE_URL_PROP => 'foo',
+                ArrayShlinkConfig::API_KEY_PROP => 'bar',
+                ArrayShlinkConfig::VERSION_PROP => '2',
+            ],
+            'Provided version "2" is invalid. Expected one of ["3"]',
+        ];
     }
 
     #[Test]

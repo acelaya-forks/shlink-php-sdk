@@ -8,9 +8,7 @@ use DateTimeInterface;
 
 trait ShortUrlPayloadTrait
 {
-    private function __construct(private array $payload = [])
-    {
-    }
+    private function __construct(private array $payload = []) {}
 
     public function validSince(DateTimeInterface $validSince): self
     {

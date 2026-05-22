@@ -41,7 +41,8 @@ class EnvShlinkConfigTest extends TestCase
                 putenv(sprintf('%s=%s', $key, $value));
             }
         };
-        $standardMessage = 'Either "SHLINK_BASE_URL" and/or "SHLINK_API_KEY" env vars are missing. '
+        $standardMessage =
+            'Either "SHLINK_BASE_URL" and/or "SHLINK_API_KEY" env vars are missing. '
             . 'Make sure both are properly set.';
 
         yield 'no env vars' => [$buildSetUpWithEnvVars(), $standardMessage];
@@ -53,11 +54,14 @@ class EnvShlinkConfigTest extends TestCase
             $buildSetUpWithEnvVars([EnvShlinkConfig::BASE_URL_ENV_VAR => 'SOME_VALUE']),
             $standardMessage,
         ];
-        yield 'invalid api version' => [$buildSetUpWithEnvVars([
-            EnvShlinkConfig::BASE_URL_ENV_VAR => 'SOME_VALUE',
-            EnvShlinkConfig::API_KEY_ENV_VAR => 'SOME_VALUE',
-            EnvShlinkConfig::VERSION_ENV_VAR => '4',
-        ]), 'Provided version "4" is invalid. Expected one of ["3"]'];
+        yield 'invalid api version' => [
+            $buildSetUpWithEnvVars([
+                EnvShlinkConfig::BASE_URL_ENV_VAR => 'SOME_VALUE',
+                EnvShlinkConfig::API_KEY_ENV_VAR => 'SOME_VALUE',
+                EnvShlinkConfig::VERSION_ENV_VAR => '4',
+            ]),
+            'Provided version "4" is invalid. Expected one of ["3"]',
+        ];
     }
 
     #[Test]

@@ -8,6 +8,6 @@ test-integration export-ignore
 CHANGELOG.md export-ignore
 docker-compose.yml export-ignore
 indocker export-ignore
-phpcs.xml export-ignore
+mago.toml export-ignore
 phpunit.xml.dist export-ignore
 phpunit-integration.xml export-ignore

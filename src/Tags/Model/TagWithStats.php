@@ -8,9 +8,7 @@ use Shlinkio\Shlink\SDK\Visits\Model\VisitsSummary;
 
 final readonly class TagWithStats
 {
-    private function __construct(public string $tag, public int $shortUrlsCount, public VisitsSummary $visitsSummary)
-    {
-    }
+    private function __construct(public string $tag, public int $shortUrlsCount, public VisitsSummary $visitsSummary) {}
 
     public static function fromArray(array $payload): self
     {

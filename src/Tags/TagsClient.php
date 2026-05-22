@@ -17,9 +17,7 @@ use Shlinkio\Shlink\SDK\Tags\Model\TagsWithStatsList;
 
 readonly class TagsClient implements TagsClientInterface
 {
-    public function __construct(private HttpClientInterface $httpClient)
-    {
-    }
+    public function __construct(private HttpClientInterface $httpClient) {}
 
     /**
      * @inheritDoc

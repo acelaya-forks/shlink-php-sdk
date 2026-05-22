@@ -10,8 +10,7 @@ final readonly class DomainRedirects
         public string|null $baseUrlRedirect,
         public string|null $regularNotFoundRedirect,
         public string|null $invalidShortUrlRedirect,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $payload): self
     {

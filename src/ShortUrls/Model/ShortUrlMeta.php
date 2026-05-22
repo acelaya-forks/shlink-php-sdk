@@ -13,8 +13,7 @@ final readonly class ShortUrlMeta
         public DateTimeInterface|null $validSince,
         public DateTimeInterface|null $validUntil,
         public int|null $maxVisits,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $payload): self
     {

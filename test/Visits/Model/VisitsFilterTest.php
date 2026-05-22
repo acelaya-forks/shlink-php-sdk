@@ -25,11 +25,14 @@ class VisitsFilterTest extends TestCase
     {
         $now = new DateTimeImmutable();
 
-        yield [fn () => VisitsFilter::create(), []];
-        yield [fn () => VisitsFilter::create()->since($now), ['startDate' => $now->format(DateTimeInterface::ATOM)]];
-        yield [fn () => VisitsFilter::create()->excludingBots(), ['excludeBots' => 'true']];
+        yield [VisitsFilter::create(...), []];
         yield [
-            fn () => VisitsFilter::create()
+            static fn () => VisitsFilter::create()->since($now),
+            ['startDate' => $now->format(DateTimeInterface::ATOM)],
+        ];
+        yield [static fn () => VisitsFilter::create()->excludingBots(), ['excludeBots' => 'true']];
+        yield [
+            static fn () => VisitsFilter::create()
                 ->excludingBots()
                 ->since($now)
                 ->until($now),

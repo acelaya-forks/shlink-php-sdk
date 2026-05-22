@@ -41,7 +41,7 @@ class HttpExceptionTest extends TestCase
         array $expectedAdditional,
     ): void {
         $e = HttpException::fromNonSuccessfulResponse(
-            (new Response())->withBody(Utils::streamFor(json_encode($payload, JSON_THROW_ON_ERROR))),
+            new Response()->withBody(Utils::streamFor(json_encode($payload, JSON_THROW_ON_ERROR))),
         );
         $this->runAssertions($e, $expectedType, $expectedTitle, $expectedDetail, $expectedStatus, $expectedAdditional);
     }

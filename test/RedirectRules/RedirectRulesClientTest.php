@@ -25,7 +25,7 @@ use function sprintf;
 class RedirectRulesClientTest extends TestCase
 {
     private RedirectRulesClient $client;
-    private MockObject & HttpClientInterface $httpClient;
+    private MockObject&HttpClientInterface $httpClient;
 
     public function setUp(): void
     {
@@ -38,41 +38,45 @@ class RedirectRulesClientTest extends TestCase
     {
         [$shortCode, $query] = $identifier->toShortCodeAndQuery();
 
-        $this->httpClient->expects($this->once())->method('getFromShlink')->with(
-            sprintf('/short-urls/%s/redirect-rules', $shortCode),
-            $query,
-        )->willReturn([
-            'defaultLongUrl' => 'https://example.com/default',
-            'redirectRules' => [
-                [
-                    'longUrl' => 'https://example.com/android',
-                    'priority' => 1,
-                    'conditions' => [
-                        [
-                            'type' => RedirectConditionType::DEVICE->value,
-                            'matchValue' => Device::ANDROID->value,
-                            'matchKey' => null,
+        $this->httpClient
+            ->expects($this->once())
+            ->method('getFromShlink')
+            ->with(
+                sprintf('/short-urls/%s/redirect-rules', $shortCode),
+                $query,
+            )
+            ->willReturn([
+                'defaultLongUrl' => 'https://example.com/default',
+                'redirectRules' => [
+                    [
+                        'longUrl' => 'https://example.com/android',
+                        'priority' => 1,
+                        'conditions' => [
+                            [
+                                'type' => RedirectConditionType::DEVICE->value,
+                                'matchValue' => Device::ANDROID->value,
+                                'matchKey' => null,
+                            ],
+                        ],
+                    ],
+                    [
+                        'longUrl' => 'https://example.com/freanch-and-foo-bar-query',
+                        'priority' => 2,
+                        'conditions' => [
+                            [
+                                'type' => RedirectConditionType::LANGUAGE->value,
+                                'matchValue' => 'fr',
+                                'matchKey' => null,
+                            ],
+                            [
+                                'type' => RedirectConditionType::QUERY_PARAM->value,
+                                'matchValue' => 'bar',
+                                'matchKey' => 'foo',
+                            ],
                         ],
                     ],
                 ],
-                [
-                    'longUrl' => 'https://example.com/freanch-and-foo-bar-query',
-                    'priority' => 2,
-                    'conditions' => [
-                        [
-                            'type' => RedirectConditionType::LANGUAGE->value,
-                            'matchValue' => 'fr',
-                            'matchKey' => null,
-                        ],
-                        [
-                            'type' => RedirectConditionType::QUERY_PARAM->value,
-                            'matchValue' => 'bar',
-                            'matchKey' => 'foo',
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+            ]);
 
         $result = $this->client->getShortUrlRedirectRules($identifier);
 
@@ -126,15 +130,19 @@ class RedirectRulesClientTest extends TestCase
         [$shortCode, $query] = $identifier->toShortCodeAndQuery();
         $rules = SetRedirectRules::fromScratch();
 
-        $this->httpClient->expects($this->once())->method('callShlinkWithBody')->with(
-            sprintf('/short-urls/%s/redirect-rules', $shortCode),
-            'POST',
-            $rules,
-            $query,
-        )->willReturn([
-            'defaultLongUrl' => 'https://example.com/default',
-            'redirectRules' => [],
-        ]);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('callShlinkWithBody')
+            ->with(
+                sprintf('/short-urls/%s/redirect-rules', $shortCode),
+                'POST',
+                $rules,
+                $query,
+            )
+            ->willReturn([
+                'defaultLongUrl' => 'https://example.com/default',
+                'redirectRules' => [],
+            ]);
 
         $result = $this->client->setShortUrlRedirectRules($identifier, $rules);
 

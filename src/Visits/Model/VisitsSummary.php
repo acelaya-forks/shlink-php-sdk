@@ -11,9 +11,7 @@ final readonly class VisitsSummary
      * @param int<0, max> $nonBots
      * @param int<0, max> $bots
      */
-    private function __construct(public int $total, public int $nonBots, public int $bots)
-    {
-    }
+    private function __construct(public int $total, public int $nonBots, public int $bots) {}
 
     public static function fromArray(array $payload): self
     {

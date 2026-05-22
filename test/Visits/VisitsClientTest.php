@@ -33,33 +33,37 @@ use function sprintf;
 class VisitsClientTest extends TestCase
 {
     private VisitsClient $visitsClient;
-    private MockObject & HttpClientInterface $httpClient;
+    private MockObject&HttpClientInterface $httpClient;
     private string $now;
 
     public function setUp(): void
     {
         $this->httpClient = $this->createMock(HttpClientInterface::class);
         $this->visitsClient = new VisitsClient($this->httpClient);
-        $this->now = (new DateTimeImmutable())->format(DateTimeInterface::ATOM);
+        $this->now = new DateTimeImmutable()->format(DateTimeInterface::ATOM);
     }
 
     #[Test]
     public function getVisitsOverviewPerformsExpectedCall(): void
     {
-        $this->httpClient->expects($this->once())->method('getFromShlink')->with('/visits')->willReturn([
-            'visits' => [
-                'nonOrphanVisits' => [
-                    'total' => 200,
-                    'nonBots' => 150,
-                    'bots' => 50,
+        $this->httpClient
+            ->expects($this->once())
+            ->method('getFromShlink')
+            ->with('/visits')
+            ->willReturn([
+                'visits' => [
+                    'nonOrphanVisits' => [
+                        'total' => 200,
+                        'nonBots' => 150,
+                        'bots' => 50,
+                    ],
+                    'orphanVisits' => [
+                        'total' => 38,
+                        'nonBots' => 30,
+                        'bots' => 8,
+                    ],
                 ],
-                'orphanVisits' => [
-                    'total' => 38,
-                    'nonBots' => 30,
-                    'bots' => 8,
-                ],
-            ],
-        ]);
+            ]);
 
         $result = $this->visitsClient->getVisitsOverview();
 
@@ -77,13 +81,17 @@ class VisitsClientTest extends TestCase
     {
         $amountOfPages = 3;
 
-        $this->httpClient->expects($this->exactly($amountOfPages))->method('getFromShlink')->with(
-            sprintf('/short-urls/%s/visits', $identifier->shortCode),
-            $this->callback(function (array $query) use ($identifier) {
-                $domain = $identifier->domain;
-                return $domain === null ? ! array_key_exists('domain', $query) : $query['domain'] === $domain;
-            }),
-        )->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
+        $this->httpClient
+            ->expects($this->exactly($amountOfPages))
+            ->method('getFromShlink')
+            ->with(
+                sprintf('/short-urls/%s/visits', $identifier->shortCode),
+                $this->callback(static function (array $query) use ($identifier) {
+                    $domain = $identifier->domain;
+                    return $domain === null ? !array_key_exists('domain', $query) : $query['domain'] === $domain;
+                }),
+            )
+            ->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
 
         $result = $this->visitsClient->listShortUrlVisits($identifier);
 
@@ -111,8 +119,8 @@ class VisitsClientTest extends TestCase
     public static function provideShortUrlExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'INVALID_SHORTCODE' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'INVALID_SHORTCODE' => [
             HttpException::fromPayload(['type' => ErrorType::SHORT_URL_NOT_FOUND->value]),
             ShortUrlNotFoundException::class,
         ];
@@ -122,10 +130,14 @@ class VisitsClientTest extends TestCase
     public function listTagVisitsPerformsExpectedCall(): void
     {
         $amountOfPages = 5;
-        $this->httpClient->expects($this->exactly($amountOfPages))->method('getFromShlink')->with(
-            '/tags/foo/visits',
-            $this->anything(),
-        )->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
+        $this->httpClient
+            ->expects($this->exactly($amountOfPages))
+            ->method('getFromShlink')
+            ->with(
+                '/tags/foo/visits',
+                $this->anything(),
+            )
+            ->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
 
         $result = $this->visitsClient->listTagVisits('foo');
 
@@ -147,8 +159,8 @@ class VisitsClientTest extends TestCase
     public static function provideTagExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'TAG_NOT_FOUND' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'TAG_NOT_FOUND' => [
             HttpException::fromPayload(['type' => ErrorType::TAG_NOT_FOUND->value]),
             TagNotFoundException::class,
         ];
@@ -158,10 +170,14 @@ class VisitsClientTest extends TestCase
     public function listDomainVisitsPerformsExpectedCall(): void
     {
         $amountOfPages = 5;
-        $this->httpClient->expects($this->exactly($amountOfPages))->method('getFromShlink')->with(
-            '/domains/foo.com/visits',
-            $this->anything(),
-        )->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
+        $this->httpClient
+            ->expects($this->exactly($amountOfPages))
+            ->method('getFromShlink')
+            ->with(
+                '/domains/foo.com/visits',
+                $this->anything(),
+            )
+            ->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
 
         $result = $this->visitsClient->listDomainVisits('foo.com');
 
@@ -172,10 +188,14 @@ class VisitsClientTest extends TestCase
     public function listDefaultDomainVisitsPerformsExpectedCall(): void
     {
         $amountOfPages = 5;
-        $this->httpClient->expects($this->exactly($amountOfPages))->method('getFromShlink')->with(
-            '/domains/DEFAULT/visits',
-            $this->anything(),
-        )->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
+        $this->httpClient
+            ->expects($this->exactly($amountOfPages))
+            ->method('getFromShlink')
+            ->with(
+                '/domains/DEFAULT/visits',
+                $this->anything(),
+            )
+            ->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
 
         $result = $this->visitsClient->listDefaultDomainVisits();
 
@@ -209,8 +229,8 @@ class VisitsClientTest extends TestCase
     public static function provideDomainExceptions(): iterable
     {
         yield 'no type' => [HttpException::fromPayload([]), HttpException::class];
-        yield 'not expected type' =>  [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
-        yield 'DOMAIN_NOT_FOUND' =>  [
+        yield 'not expected type' => [HttpException::fromPayload(['type' => 'something else']), HttpException::class];
+        yield 'DOMAIN_NOT_FOUND' => [
             HttpException::fromPayload(['type' => ErrorType::DOMAIN_NOT_FOUND->value]),
             DomainNotFoundException::class,
         ];
@@ -220,10 +240,14 @@ class VisitsClientTest extends TestCase
     public function listOrphanVisitsPerformsExpectedCall(): void
     {
         $amountOfPages = 1;
-        $this->httpClient->expects($this->exactly($amountOfPages))->method('getFromShlink')->with(
-            '/visits/orphan',
-            $this->anything(),
-        )->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
+        $this->httpClient
+            ->expects($this->exactly($amountOfPages))
+            ->method('getFromShlink')
+            ->with(
+                '/visits/orphan',
+                $this->anything(),
+            )
+            ->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
 
         $result = $this->visitsClient->listOrphanVisits();
 
@@ -246,13 +270,18 @@ class VisitsClientTest extends TestCase
 
         $amountOfPages = 1;
         $rawType = $visitsFilter->toArray()['type'] ?? null;
-        $this->httpClient->expects($this->exactly($amountOfPages))->method('getFromShlink')->with(
-            '/visits/orphan',
-            $this->callback(
-                fn (array $query)
-                    => $rawType === null ? ! array_key_exists('type', $query) : $query['type'] === $rawType,
-            ),
-        )->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
+        $this->httpClient
+            ->expects($this->exactly($amountOfPages))
+            ->method('getFromShlink')
+            ->with(
+                '/visits/orphan',
+                $this->callback(
+                    static fn (array $query) => $rawType === null
+                        ? !array_key_exists('type', $query)
+                        : $query['type'] === $rawType,
+                ),
+            )
+            ->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
 
         $result = $this->visitsClient->listOrphanVisitsWithFilter($visitsFilter);
 
@@ -263,10 +292,14 @@ class VisitsClientTest extends TestCase
     public function listNonOrphanVisitsPerformsExpectedCall(): void
     {
         $amountOfPages = 1;
-        $this->httpClient->expects($this->exactly($amountOfPages))->method('getFromShlink')->with(
-            '/visits/non-orphan',
-            $this->anything(),
-        )->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
+        $this->httpClient
+            ->expects($this->exactly($amountOfPages))
+            ->method('getFromShlink')
+            ->with(
+                '/visits/non-orphan',
+                $this->anything(),
+            )
+            ->willReturnCallback($this->buildPaginationImplementation($amountOfPages));
 
         $result = $this->visitsClient->listNonOrphanVisits();
 
@@ -286,8 +319,8 @@ class VisitsClientTest extends TestCase
             $count++;
             self::assertStringStartsWith('referer_', $visit->referer());
             self::assertStringStartsWith('userAgent_', $visit->userAgent());
-            self::assertStringEndsWith($index % 2 === 0 ? '_1' : '_2', $visit->referer());
-            self::assertStringEndsWith($index % 2 === 0 ? '_1' : '_2', $visit->userAgent());
+            self::assertStringEndsWith(($index % 2) === 0 ? '_1' : '_2', $visit->referer());
+            self::assertStringEndsWith(($index % 2) === 0 ? '_1' : '_2', $visit->userAgent());
             self::assertStringStartsWith($visit->date()->format('Y-m-d'), $this->now);
         }
 
@@ -297,7 +330,7 @@ class VisitsClientTest extends TestCase
     private function buildPaginationImplementation(int $amountOfPages): Closure
     {
         $now = $this->now;
-        return function ($_, array $query) use ($amountOfPages, $now) {
+        return static function ($_, array $query) use ($amountOfPages, $now) {
             $page = $query['page'];
             $data = [
                 [
@@ -328,11 +361,15 @@ class VisitsClientTest extends TestCase
     #[Test]
     public function deleteOrphanVisitsPerformsExpectedCall(): void
     {
-        $this->httpClient->expects($this->once())->method('callShlinkWithBody')->with(
-            '/visits/orphan',
-            'DELETE',
-            [],
-        )->willReturn(['deletedVisits' => 5562]);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('callShlinkWithBody')
+            ->with(
+                '/visits/orphan',
+                'DELETE',
+                [],
+            )
+            ->willReturn(['deletedVisits' => 5562]);
 
         $result = $this->visitsClient->deleteOrphanVisits();
 
@@ -344,11 +381,15 @@ class VisitsClientTest extends TestCase
     public function deleteShortUrlVisitsPerformsExpectedCall(ShortUrlIdentifier $identifier): void
     {
         [$shortCode, $query] = $identifier->toShortCodeAndQuery();
-        $this->httpClient->expects($this->once())->method('callShlinkWithBody')->with(
-            sprintf('/short-urls/%s/visits', $shortCode),
-            'DELETE',
-            $query,
-        )->willReturn(['deletedVisits' => 5562]);
+        $this->httpClient
+            ->expects($this->once())
+            ->method('callShlinkWithBody')
+            ->with(
+                sprintf('/short-urls/%s/visits', $shortCode),
+                'DELETE',
+                $query,
+            )
+            ->willReturn(['deletedVisits' => 5562]);
 
         $result = $this->visitsClient->deleteShortUrlVisits($identifier);
 

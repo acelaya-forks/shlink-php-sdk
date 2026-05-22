@@ -15,19 +15,15 @@ final readonly class ArrayShlinkConfig implements ShlinkConfigInterface
     public const API_KEY_PROP = 'apiKey';
     public const VERSION_PROP = 'version';
 
-    private function __construct(private ShlinkConfigInterface $wrapped)
-    {
-    }
+    private function __construct(private ShlinkConfigInterface $wrapped) {}
 
     /**
      * @throws InvalidConfigException
      */
     public static function fromArray(array $config): self
     {
-        return new self(ShlinkConfig::fromRawConfig(new class ($config) implements RawConfigInterface {
-            public function __construct(private readonly array $config)
-            {
-            }
+        return new self(ShlinkConfig::fromRawConfig(new class($config) implements RawConfigInterface {
+            public function __construct(private readonly array $config) {}
 
             public function baseUrl(): string
             {

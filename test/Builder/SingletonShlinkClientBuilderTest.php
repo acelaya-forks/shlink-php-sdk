@@ -24,7 +24,7 @@ class SingletonShlinkClientBuilderTest extends TestCase
     use ClientBuilderMethodsProviderTrait;
 
     private SingletonShlinkClientBuilder $builder;
-    private MockObject & ShlinkClientBuilderInterface $wrapped;
+    private MockObject&ShlinkClientBuilderInterface $wrapped;
 
     public function setUp(): void
     {
@@ -38,15 +38,19 @@ class SingletonShlinkClientBuilderTest extends TestCase
     #[Test, DataProvider('provideMethods')]
     public function buildClientReturnsAlwaysNewInstances(string $method): void
     {
-        $this->wrapped->expects($this->exactly(2))->method($method)->with(
-            $this->isInstanceOf(ShlinkConfigInterface::class),
-        )->willReturn(new ShlinkClient(
-            $this->createStub(ShortUrlsClientInterface::class),
-            $this->createStub(VisitsClientInterface::class),
-            $this->createStub(TagsClientInterface::class),
-            $this->createStub(DomainsClientInterface::class),
-            $this->createStub(RedirectRulesClientInterface::class),
-        ));
+        $this->wrapped
+            ->expects($this->exactly(2))
+            ->method($method)
+            ->with(
+                $this->isInstanceOf(ShlinkConfigInterface::class),
+            )
+            ->willReturn(new ShlinkClient(
+                $this->createStub(ShortUrlsClientInterface::class),
+                $this->createStub(VisitsClientInterface::class),
+                $this->createStub(TagsClientInterface::class),
+                $this->createStub(DomainsClientInterface::class),
+                $this->createStub(RedirectRulesClientInterface::class),
+            ));
 
         $configOne = ShlinkConfig::fromBaseUrlAndApiKey('foo', 'bar');
         $instance1 = $this->builder->{$method}($configOne);

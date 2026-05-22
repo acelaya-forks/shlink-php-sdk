@@ -15,9 +15,7 @@ final readonly class SetRedirectRules implements JsonSerializable
     /**
      * @param array<positive-int, RedirectRuleData> $rules
      */
-    private function __construct(private array $rules)
-    {
-    }
+    private function __construct(private array $rules) {}
 
     public static function fromScratch(): self
     {

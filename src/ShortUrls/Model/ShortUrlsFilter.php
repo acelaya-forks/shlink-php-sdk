@@ -12,9 +12,7 @@ use function sprintf;
 
 final class ShortUrlsFilter implements ArraySerializable
 {
-    private function __construct(private array $query = [])
-    {
-    }
+    private function __construct(private array $query = []) {}
 
     public static function create(): self
     {

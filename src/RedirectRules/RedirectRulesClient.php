@@ -17,9 +17,7 @@ use function sprintf;
 
 readonly class RedirectRulesClient implements RedirectRulesClientInterface
 {
-    public function __construct(private HttpClientInterface $httpClient)
-    {
-    }
+    public function __construct(private HttpClientInterface $httpClient) {}
 
     public function getShortUrlRedirectRules(ShortUrlIdentifier $identifier): RedirectRulesList
     {

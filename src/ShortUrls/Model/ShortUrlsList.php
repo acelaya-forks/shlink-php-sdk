@@ -16,7 +16,7 @@ final class ShortUrlsList extends ListEndpointIterator
 
     private function __construct(Closure $pageLoader)
     {
-        parent::__construct($pageLoader, static fn (array $value) => ShortUrl::fromArray($value), self::ITEMS_PER_PAGE);
+        parent::__construct($pageLoader, ShortUrl::fromArray(...), self::ITEMS_PER_PAGE);
     }
 
     /**

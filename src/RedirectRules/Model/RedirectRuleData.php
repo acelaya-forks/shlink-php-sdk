@@ -11,9 +11,7 @@ final readonly class RedirectRuleData implements JsonSerializable
     /**
      * @param RedirectCondition[] $conditions
      */
-    private function __construct(public string $longUrl, public array $conditions)
-    {
-    }
+    private function __construct(public string $longUrl, public array $conditions) {}
 
     public static function forLongUrl(string $longUrl): self
     {

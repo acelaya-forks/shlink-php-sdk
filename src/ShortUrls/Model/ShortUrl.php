@@ -26,8 +26,7 @@ final readonly class ShortUrl
         public array $tags,
         public ShortUrlMeta $meta,
         public VisitsSummary $visitsSummary,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $payload): self
     {

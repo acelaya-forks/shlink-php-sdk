@@ -16,9 +16,7 @@ final readonly class EnvShlinkConfig implements ShlinkConfigInterface
     public const API_KEY_ENV_VAR = 'SHLINK_API_KEY';
     public const VERSION_ENV_VAR = 'SHLINK_API_VERSION';
 
-    private function __construct(private ShlinkConfigInterface $wrapped)
-    {
-    }
+    private function __construct(private ShlinkConfigInterface $wrapped) {}
 
     /**
      * @throws InvalidConfigException
@@ -26,10 +24,8 @@ final readonly class EnvShlinkConfig implements ShlinkConfigInterface
     public static function fromEnv(): self
     {
         $env = getenv();
-        return new self(ShlinkConfig::fromRawConfig(new class ($env) implements RawConfigInterface {
-            public function __construct(private readonly array $env)
-            {
-            }
+        return new self(ShlinkConfig::fromRawConfig(new class($env) implements RawConfigInterface {
+            public function __construct(private readonly array $env) {}
 
             public function baseUrl(): string
             {

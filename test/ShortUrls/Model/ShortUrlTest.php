@@ -75,14 +75,16 @@ class ShortUrlTest extends TestCase
                 'crawlable' => true,
                 'forwardQuery' => true,
                 'tags' => ['foo', 'bar'],
-                'meta' => $meta = [
-                    'maxVisits' => 30,
-                ],
-                'visitsSummary' => $visitsSummary = [
-                    'total' => 3,
-                    'nonBots' => 3,
-                    'bots' => 3,
-                ],
+                'meta' =>
+                    $meta = [
+                        'maxVisits' => 30,
+                    ],
+                'visitsSummary' =>
+                    $visitsSummary = [
+                        'total' => 3,
+                        'nonBots' => 3,
+                        'bots' => 3,
+                    ],
             ],
             'foo',
             'https://s.test/foo',

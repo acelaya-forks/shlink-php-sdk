@@ -29,8 +29,7 @@ readonly class ShlinkClientBuilder implements ShlinkClientBuilderInterface
         private RequestFactoryInterface $requestFactory,
         private StreamFactoryInterface $streamFactory,
         private HttpDebuggerInterface|null $debugger = null,
-    ) {
-    }
+    ) {}
 
     public function buildShortUrlsClient(ShlinkConfigInterface $config): ShortUrlsClientInterface
     {

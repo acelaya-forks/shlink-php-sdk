@@ -31,15 +31,27 @@ class NonUniqueSlugExceptionTest extends TestCase
     public static function provideExceptions(): iterable
     {
         yield [HttpException::fromPayload([]), '', null, '', -1];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 400,
-        ]), '', null, $message, $code];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 404,
-            'customSlug' => $customSlug = 'baz',
-            'domain' => $domain = 's.test',
-        ]), $customSlug, $domain, $message, $code];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 400,
+            ]),
+            '',
+            null,
+            $message,
+            $code,
+        ];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 404,
+                'customSlug' => $customSlug = 'baz',
+                'domain' => $domain = 's.test',
+            ]),
+            $customSlug,
+            $domain,
+            $message,
+            $code,
+        ];
     }
 }

@@ -29,14 +29,24 @@ class InvalidLongUrlExceptionTest extends TestCase
     public static function provideExceptions(): iterable
     {
         yield [HttpException::fromPayload([]), '', '', -1];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 400,
-        ]), '', $message, $code];
-        yield [HttpException::fromPayload([
-            'detail' => $message = 'This is the message',
-            'status' => $code = 404,
-            'url' => $url = 'https://foo.com/baz',
-        ]), $url, $message, $code];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 400,
+            ]),
+            '',
+            $message,
+            $code,
+        ];
+        yield [
+            HttpException::fromPayload([
+                'detail' => $message = 'This is the message',
+                'status' => $code = 404,
+                'url' => $url = 'https://foo.com/baz',
+            ]),
+            $url,
+            $message,
+            $code,
+        ];
     }
 }
