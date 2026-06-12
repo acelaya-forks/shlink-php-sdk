@@ -6,6 +6,7 @@ namespace Shlinkio\Shlink\SDK\RedirectRules\Model;
 
 use DateTimeInterface;
 use JsonSerializable;
+use Shlinkio\Shlink\SDK\ShortUrls\Model\Browser;
 use Shlinkio\Shlink\SDK\ShortUrls\Model\Device;
 
 final readonly class RedirectCondition implements JsonSerializable
@@ -69,6 +70,11 @@ final readonly class RedirectCondition implements JsonSerializable
     public static function forAfterDate(DateTimeInterface $date): self
     {
         return new self(RedirectConditionType::AFTER_DATE, $date->format(DateTimeInterface::ATOM));
+    }
+
+    public static function forBrowser(Browser $browser): self
+    {
+        return new self(RedirectConditionType::BROWSER, $browser->value);
     }
 
     public static function fromArray(array $payload): self

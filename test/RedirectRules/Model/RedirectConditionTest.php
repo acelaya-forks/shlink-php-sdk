@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Shlinkio\Shlink\SDK\RedirectRules\Model\RedirectCondition;
 use Shlinkio\Shlink\SDK\RedirectRules\Model\RedirectConditionType;
+use Shlinkio\Shlink\SDK\ShortUrls\Model\Browser;
 use Shlinkio\Shlink\SDK\ShortUrls\Model\Device;
 
 class RedirectConditionTest extends TestCase
@@ -94,6 +95,16 @@ class RedirectConditionTest extends TestCase
 
         self::assertEquals(RedirectConditionType::DEVICE, $condition->type);
         self::assertEquals(Device::IOS->value, $condition->matchValue);
+        self::assertNull($condition->matchKey);
+    }
+
+    #[Test]
+    public function forBrowserCreatesExpectedCondition(): void
+    {
+        $condition = RedirectCondition::forBrowser(Browser::CHROME);
+
+        self::assertEquals(RedirectConditionType::BROWSER, $condition->type);
+        self::assertEquals(Browser::CHROME->value, $condition->matchValue);
         self::assertNull($condition->matchKey);
     }
 
