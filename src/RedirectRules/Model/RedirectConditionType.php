@@ -16,5 +16,6 @@ enum RedirectConditionType: string
     case GEOLOCATION_CITY_NAME = 'geolocation-city-name';
     case BEFORE_DATE = 'before-date';
     case AFTER_DATE = 'after-date';
+    case BROWSER = 'browser';
     case UNKNOWN = 'unknown';
 }
